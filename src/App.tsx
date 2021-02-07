@@ -6,17 +6,14 @@ import {ButtonReset} from "./components/ButtonReset/ButtonReset";
 
 
 function App() {
-    const [counter, setCounter] = useState(0);
+    let [counter, setCounter] = useState(0);
 
     function increment() {
-        if (counter < 5)
-            setCounter(counter + 1);
+        counter < 5 ? setCounter(++counter) : setCounter(counter);
     }
 
     function back() {
-        if (counter > 0) {
-            setCounter(0);
-        }
+        counter > 0 ? setCounter(0) : setCounter(counter);
     }
 
     return (
