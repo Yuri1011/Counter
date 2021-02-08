@@ -18,6 +18,7 @@ function App() {
 
     return (
         <div className='App'>
+            <div>Hello</div>
             <Display counter={counter}/>
             <ButtonIncrement increment={increment}/>
             <ButtonReset back={back}/>
