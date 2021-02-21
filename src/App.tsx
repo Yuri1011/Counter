@@ -1,27 +1,40 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import {Display} from "./components/Display/Display";
-import {ButtonIncrement} from "./components/ButtonIncrement/ButtonIncrement";
-import {ButtonReset} from "./components/ButtonReset/ButtonReset";
-
+import {DisplaySettings} from "./components/DisplaySettings/DisplaySettings";
 
 function App() {
     let [counter, setCounter] = useState(0);
+    let [maxNumber, setMaxNumber] = useState('0');
+    let [startNumber, setStartNumber] = useState('0');
 
-    function increment() {
-        counter < 5 ? setCounter(++counter) : setCounter(counter);
-    }
+    useEffect(() => {
+        let valueAsString = localStorage.getItem('maxValue')
+        if (valueAsString) {
+            let newValue = JSON.parse(valueAsString)
+            setMaxNumber(newValue);
+        }
+    }, [])
+    useEffect(() => {
+        localStorage.setItem('maxValue', maxNumber);
+    }, [maxNumber])
 
-    function back() {
-        counter > 0 ? setCounter(0) : setCounter(counter);
+    let increment = () => {
+        counter < Number(maxNumber) ? setCounter(++counter) : setCounter(counter);
     }
 
     return (
         <div className='App'>
-            <div>Hello</div>
-            <Display counter={counter}/>
-            <ButtonIncrement increment={increment}/>
-            <ButtonReset back={back}/>
+            <DisplaySettings setMaxNumber={setMaxNumber}
+                             setStartNumber={setStartNumber}
+                             setCounter={setCounter}
+                             maxNumber={maxNumber}
+                             startNumber={startNumber}/>
+            <Display counter={counter}
+                     increment={increment}
+                     maxNumber={maxNumber}
+                     startNumber={startNumber}
+                     setCounter={setCounter} />
         </div>
     )
 }

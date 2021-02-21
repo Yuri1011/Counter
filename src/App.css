@@ -1,10 +1,6 @@
 .App {
-    position: relative;
-    top: 200px;
-    left: 500px;
-    width: 550px;
-    height: 300px;
-    background-color: #395e67;
-    text-align: center;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr;
 }
 
