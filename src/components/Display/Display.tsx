@@ -1,33 +1,37 @@
 import React from "react";
 import c from "./Display.module.css";
-import {ButtonIncrement} from "../Buttons/ButtonIncrement/ButtonIncrement";
-import {ButtonReset} from "../Buttons/ButtonReset/ButtonReset";
+import {Buttons} from "../Buttons/Buttons";
 
 type PropsDisplay = {
     counter: number
     increment: () => void
+    reset: () => void
+    settings: () => void
     startNumber: any
     maxNumber: any
     setCounter: (number: any) => void
+    disabledInc: boolean
+    disabledReset: boolean
 }
 
-export function Display({counter, increment, maxNumber, startNumber, setCounter}: PropsDisplay) {
+export function Display(props: PropsDisplay) {
 
-    let colorNumberStyle = {
-        color: counter === Number(maxNumber) ? 'red' : 'aquamarine',
-        borderColor: counter === Number(maxNumber) || startNumber === maxNumber || startNumber < 0 || maxNumber < 0 ? 'red' : 'green'
+    let showDisplayCounter = {
+        display: +props.counter ? 'block' : 'none'
     }
-    let styleDisplayCounter = {
-        display: counter ? 'block' : 'none'
-    }
+
     let styleDisplayMessage = {
-        display: counter ? 'none' : 'block',
-        color: startNumber === maxNumber || startNumber < 0 || maxNumber < 0 ? 'darkred' : 'chartreuse',
+        display: +props.counter ? 'none' : 'block',
+        color: +props.startNumber === +props.maxNumber || props.startNumber < 0 || props.maxNumber < 0 || +props.startNumber > +props.maxNumber ? 'darkred' : 'chartreuse'
+    }
+    let colorNumberStyle = {
+        color: props.counter === +props.maxNumber ? 'red' : 'aquamarine',
+        borderColor: props.counter === +props.maxNumber || +props.startNumber === +props.maxNumber || props.startNumber < 0 || props.maxNumber < 0 || +props.startNumber > +props.maxNumber ? 'red' : 'green'
     }
     let inputValidation = () => {
-        if (maxNumber === startNumber || maxNumber < 0 || startNumber < 0) {
+        if (+props.maxNumber === +props.startNumber || +props.maxNumber < 0 || +props.startNumber < 0 || +props.startNumber > +props.maxNumber) {
             return "Incorrect value";
-        } else if (maxNumber != 0 || maxNumber > 0) {
+        } else if (+props.maxNumber != 0 || +props.maxNumber > 0) {
             return "enter values and press 'set' ";
         }
     }
@@ -36,24 +40,30 @@ export function Display({counter, increment, maxNumber, startNumber, setCounter}
         <div className={c.displayBlock}>
             <div style={colorNumberStyle} className={c.displayStyle}>
 
-                <div className={c.counter} style={styleDisplayCounter}>
-                    {counter}
+                <div className={c.counter} style={showDisplayCounter}>
+                    {props.counter}
                 </div>
+
                 <div className={c.message} style={styleDisplayMessage}>
                     {inputValidation()}
                 </div>
 
             </div>
             <div className={c.buttonDisplayBlock}>
-                <ButtonIncrement counter={counter}
-                                 startNumber={startNumber}
-                                 increment={increment}
-                                 maxNumber={maxNumber}/>
-                <ButtonReset
-                    maxNumber={maxNumber}
-                    startNumber={startNumber}
-                    counter={counter}
-                    setCounter={setCounter}/>
+                <div>
+                    <Buttons title={'increment'}
+                             disabledButtons={props.disabledInc}
+                             reset={props.reset}
+                             settings={props.settings}
+                             increment={props.increment}/>
+                </div>
+                <div>
+                    <Buttons title={'reset'}
+                             disabledButtons={props.disabledReset}
+                             settings={props.settings}
+                             increment={props.increment}
+                             reset={props.reset}/>
+                </div>
             </div>
         </div>
     )

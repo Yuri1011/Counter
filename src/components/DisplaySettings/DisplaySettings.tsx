@@ -1,6 +1,6 @@
-import React from "react";
-import {ButtonSettings} from "../Buttons/ButtonSettings/ButtonSettings";
+import React, {ChangeEvent} from "react";
 import c from "./DisplaySettings.module.css";
+import {Buttons} from "../Buttons/Buttons";
 
 type DisplaySettingsPropsType = {
     setStartNumber: (number: any) => void
@@ -8,54 +8,67 @@ type DisplaySettingsPropsType = {
     startNumber: any
     maxNumber: any
     setCounter: (number: any) => void
+    increment: () => void
+    reset: () => void
+    settings: () => void
+    counter: number
+    setDisabledInc: (boolean: boolean) => void
+    setDisabledReset: (boolean: boolean) => void
+    setDisabledSet: (boolean: boolean) => void
+    disabledSet: boolean
 }
 
-export function DisplaySettings({
-                                    startNumber,
-                                    maxNumber,
-                                    setMaxNumber,
-                                    setCounter,
-                                    setStartNumber
-                                }: DisplaySettingsPropsType) {
+export function DisplaySettings(props: DisplaySettingsPropsType) {
 
-    let valueMax = React.createRef<HTMLInputElement>();
-    let valueStart = React.createRef<HTMLInputElement>();
+    let maxValueNumber = (event: ChangeEvent<HTMLInputElement>) => {
+        let number = event.currentTarget.value
+        props.setMaxNumber(number);
+        props.setDisabledInc(true);
+        props.setDisabledReset(true);
+        props.setDisabledSet((+number < 0) || (+number === +props.startNumber) || (+number > +props.maxNumber));
+    }
 
-    let maxValueNumber = () => {
-        let number = valueMax.current?.value
-        setMaxNumber(number);
+    let startValueNumber = (event: ChangeEvent<HTMLInputElement>) => {
+        let number = event.currentTarget.value
+        props.setStartNumber(number);
+        props.setDisabledInc(true);
+        props.setDisabledReset(true);
+        props.setDisabledSet((+number <= 0) || (+number >= +props.maxNumber) || (+number > +props.maxNumber));
     }
-    let startValueNumber = () => {
-        let number = valueStart.current?.value
-        setStartNumber(number);
+
+    let styleInputMax = {
+        color: +props.startNumber > +props.maxNumber || +props.maxNumber < 0 || +props.startNumber === +props.maxNumber ? 'red' : 'aquamarine',
+        borderColor: +props.startNumber > +props.maxNumber || +props.maxNumber < 0 || +props.startNumber === +props.maxNumber ? 'red' : 'green'
     }
-    let styleInput = {
-        color: startNumber === maxNumber || startNumber < 0 || maxNumber < 0 ? 'red' : 'aquamarine',
-        borderColor: startNumber === maxNumber || startNumber < 0 || maxNumber < 0 ? 'red' : 'green'
+    let styleInputStart = {
+        color: +props.startNumber > +props.maxNumber || +props.startNumber < 0 || +props.startNumber === +props.maxNumber ? 'red' : 'aquamarine',
+        borderColor: +props.startNumber > +props.maxNumber || +props.startNumber < 0 || +props.startNumber === +props.maxNumber ? 'red' : 'green'
     }
 
     return (
         <div className={c.displaySettingsBlock}>
             <div>
-                <span>max value :</span> <input ref={valueMax}
-                                                value={maxNumber}
-                                                className={c.inputMax}
-                                                style={styleInput}
-                                                type={"number"}
-                                                onChange={maxValueNumber}/>
+                <span>max value :</span> <input
+                value={props.maxNumber}
+                className={c.inputMax}
+                style={styleInputMax}
+                type={"number"}
+                onChange={maxValueNumber}/>
             </div>
             <div>
-                <span>start value :</span> <input ref={valueStart}
-                                                  value={startNumber}
-                                                  className={c.inputStart}
-                                                  style={styleInput}
-                                                  type={"number"}
-                                                  onChange={startValueNumber}/>
+                <span>start value :</span> <input
+                value={props.startNumber}
+                className={c.inputStart}
+                style={styleInputStart}
+                type={"number"}
+                onChange={startValueNumber}/>
             </div>
             <div>
-                <ButtonSettings maxNumber={maxNumber}
-                                startNumber={startNumber}
-                                setCounter={setCounter}/>
+                <Buttons title={'settings'}
+                         disabledButtons={props.disabledSet}
+                         increment={props.increment}
+                         settings={props.settings}
+                         reset={props.reset}/>
             </div>
         </div>
     )
